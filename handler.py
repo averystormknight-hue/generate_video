@@ -12,11 +12,13 @@ import binascii # Base64 에러 처리를 위해 import
 import subprocess
 import time
 import random
+import urllib.parse as urlparse
 
 def lora_basename(name: str) -> str:
     if not name:
         return "none"
     name = name.split("?")[0]
+    name = urlparse.unquote(name)
     return os.path.basename(name)
 
 # 로깅 설정

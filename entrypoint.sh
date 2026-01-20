@@ -18,23 +18,31 @@ download_if_missing() {
   curl -L --fail --retry 6 --retry-delay 5 --output "$dest" "$url"
 }
 
+# URL-decode the basename so %20 becomes space, etc.
+url_basename() {
+  python3 - <<'PY'
+import sys, urllib.parse
+print(urllib.parse.unquote(sys.argv[1].split('/')[-1]))
+PY "$1"
+}
+
 # 4 pairs (high/low) for I2V
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/mql_casting_sex_doggy_kneel_diagonally_behind_vagina_wan22_i2v_v1_high_noise.safetensors" \
-  "$LORA_DIR/mql_casting_sex_doggy_kneel_diagonally_behind_vagina_wan22_i2v_v1_high_noise.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/mql_casting_sex_doggy_kneel_diagonally_behind_vagina_wan22_i2v_v1_high_noise.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/mql_casting_sex_doggy_kneel_diagonally_behind_vagina_wan22_i2v_v1_low_noise.safetensors" \
-  "$LORA_DIR/mql_casting_sex_doggy_kneel_diagonally_behind_vagina_wan22_i2v_v1_low_noise.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/mql_casting_sex_doggy_kneel_diagonally_behind_vagina_wan22_i2v_v1_low_noise.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/doggy_style_sex_front_view_Wan2.2_I2V_high_v1.0.safetensors" \
-  "$LORA_DIR/doggy_style_sex_front_view_Wan2.2_I2V_high_v1.0.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/doggy_style_sex_front_view_Wan2.2_I2V_high_v1.0.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/doggy_style_sex_front_view_Wan2.2_I2V_Low_v1.0.safetensors" \
-  "$LORA_DIR/doggy_style_sex_front_view_Wan2.2_I2V_Low_v1.0.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/doggy_style_sex_front_view_Wan2.2_I2V_Low_v1.0.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/Pornmaster_wan%202.2_14b_I2V_Creampie_v1_high_noise.safetensors" \
-  "$LORA_DIR/Pornmaster_wan%202.2_14b_I2V_Creampie_v1_high_noise.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/Pornmaster_wan%202.2_14b_I2V_Creampie_v1_high_noise.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/Pornmaster_wan%202.2_14b_I2V_Creampie_v1_low_noise.safetensors" \
-  "$LORA_DIR/Pornmaster_wan%202.2_14b_I2V_Creampie_v1_low_noise.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/Pornmaster_wan%202.2_14b_I2V_Creampie_v1_low_noise.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/NSFW-22-H-e8.safetensors" \
-  "$LORA_DIR/NSFW-22-H-e8.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/NSFW-22-H-e8.safetensors)"
 download_if_missing "https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/NSFW-22-L-e8.safetensors" \
-  "$LORA_DIR/NSFW-22-L-e8.safetensors"
+  "$LORA_DIR/$(url_basename https://huggingface.co/Lythiga/WAN2.2_I2V_Lora/resolve/main/NSFW-22-L-e8.safetensors)"
 
 # Start ComfyUI in the background
 echo "Starting ComfyUI in the background..."
