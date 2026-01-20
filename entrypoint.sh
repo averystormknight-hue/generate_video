@@ -3,6 +3,11 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+# Error trap
+trap 'echo "❌ Error on line $LINENO. Command exited with status $?"' ERR
+
+echo "🚀 Starting entrypoint script..."
+
 # Download required models to container disk (no volume required)
 # Paths must match /ComfyUI (case-sensitive)
 COMFY_ROOT=/ComfyUI
@@ -12,20 +17,22 @@ CLIP_DIR=$COMFY_ROOT/models/clip_vision
 TEXT_DIR=$COMFY_ROOT/models/text_encoders
 VAE_DIR=$COMFY_ROOT/models/vae
 
+echo "📂 Creating directories..."
 mkdir -p "$LORA_DIR" "$DIFFUSION_DIR" "$CLIP_DIR" "$TEXT_DIR" "$VAE_DIR"
 
 download_if_missing() {
   local url="$1"
   local dest="$2"
   if [ -s "$dest" ]; then
-    echo "Found $(basename "$dest")"
+    echo "✅ Found $(basename "$dest")"
     return 0
   fi
-  echo "Downloading $(basename "$dest")"
+  echo "⬇️ Downloading $(basename "$dest") from $url"
   curl -L --fail --retry 6 --retry-delay 5 --output "$dest" "$url"
 }
 
 # Core Models
+echo "⬇️ Checking Core Models..."
 download_if_missing "https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/I2V/Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors" \
   "$DIFFUSION_DIR/Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors"
 
