@@ -11,6 +11,13 @@ import urllib.parse
 import binascii # Base64 에러 처리를 위해 import
 import subprocess
 import time
+
+def lora_basename(name: str) -> str:
+    if not name:
+        return "none"
+    name = name.split("?")[0]
+    return os.path.basename(name)
+
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -230,23 +237,28 @@ def handler(job):
         
         # LOW LoRA 노드 (553번)
         low_lora_node_id = "553"
+
+        # 기본값을 none으로 리셋 (lora_0 포함)
+        for idx in range(5):
+            prompt[high_lora_node_id]["inputs"][f"lora_{idx}"] = "none"
+            prompt[low_lora_node_id]["inputs"][f"lora_{idx}"] = "none"
         
         # 입력받은 LoRA pairs 적용 (lora_1부터 시작)
         for i, lora_pair in enumerate(lora_pairs):
             if i < 4:  # 최대 4개까지만
-                lora_high = lora_pair.get("high")
-                lora_low = lora_pair.get("low")
+                lora_high = lora_basename(lora_pair.get("high"))
+                lora_low = lora_basename(lora_pair.get("low"))
                 lora_high_weight = lora_pair.get("high_weight", 1.0)
                 lora_low_weight = lora_pair.get("low_weight", 1.0)
                 
                 # HIGH LoRA 설정 (노드 279번, lora_1부터 시작)
-                if lora_high:
+                if lora_high and lora_high != "none":
                     prompt[high_lora_node_id]["inputs"][f"lora_{i+1}"] = lora_high
                     prompt[high_lora_node_id]["inputs"][f"strength_{i+1}"] = lora_high_weight
                     logger.info(f"LoRA {i+1} HIGH applied to node 279: {lora_high} with weight {lora_high_weight}")
                 
                 # LOW LoRA 설정 (노드 553번, lora_1부터 시작)
-                if lora_low:
+                if lora_low and lora_low != "none":
                     prompt[low_lora_node_id]["inputs"][f"lora_{i+1}"] = lora_low
                     prompt[low_lora_node_id]["inputs"][f"strength_{i+1}"] = lora_low_weight
                     logger.info(f"LoRA {i+1} LOW applied to node 553: {lora_low} with weight {lora_low_weight}")
