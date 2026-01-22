@@ -56,10 +56,7 @@ download_if_missing "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wa
 
 # URL-decode the basename so %20 becomes space, etc.
 url_basename() {
-  python3 - <<'PY'
-import sys, urllib.parse
-print(urllib.parse.unquote(sys.argv[1].split('/')[-1]))
-PY "$1"
+  python3 -c "import sys, urllib.parse; print(urllib.parse.unquote(sys.argv[1].split('/')[-1]))" "$1"
 }
 
 # 4 pairs (high/low) for I2V
